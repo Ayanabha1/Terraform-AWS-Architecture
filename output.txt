@@ -1,0 +1,52 @@
+auto_scaling_output = {
+  "arn" = "arn:aws:elasticloadbalancing:ap-south-1:598880005345:targetgroup/tarraform-tg/31489475e373a2c9"
+  "id" = "terraform-asg"
+  "name" = "terraform-asg"
+}
+bastion_output = {
+  "id" = "i-0c6d348be50f3cc4e"
+  "public_ip" = "13.234.35.123"
+}
+load_balancer_output = {
+  "dns_name" = "terraform-alb-1940994411.ap-south-1.elb.amazonaws.com"
+  "id" = "arn:aws:elasticloadbalancing:ap-south-1:598880005345:loadbalancer/app/terraform-alb/8158ecd16889a8fb"
+  "name" = "terraform-alb"
+}
+private_subnet_output = {
+  "cidr_block" = [
+    "10.0.3.0/24",
+    "10.0.4.0/24",
+  ]
+  "id" = [
+    "subnet-0ce18edaf0f8b2fca",
+    "subnet-0933a64368df3c022",
+  ]
+  "name" = [
+    "Private Subnet 1",
+    "Private Subnet 2",
+  ]
+}
+public_subnet_output = {
+  "cidr_block" = [
+    "10.0.1.0/24",
+    "10.0.2.0/24",
+  ]
+  "id" = [
+    "subnet-0730f6d660dd27f7d",
+    "subnet-043ea98db8f521356",
+  ]
+  "name" = [
+    "Public Subnet 1",
+    "Public Subnet 2",
+  ]
+}
+target_group_output = {
+  "arn" = "arn:aws:elasticloadbalancing:ap-south-1:598880005345:targetgroup/tarraform-tg/31489475e373a2c9"
+  "id" = "arn:aws:elasticloadbalancing:ap-south-1:598880005345:targetgroup/tarraform-tg/31489475e373a2c9"
+  "name" = "tarraform-tg"
+}
+vpc_output = {
+  "cidr_block" = "10.0.0.0/16"
+  "id" = "vpc-038db0d144d370123"
+  "name" = "Terraform VPC"
+}

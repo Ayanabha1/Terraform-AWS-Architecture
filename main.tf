@@ -16,9 +16,11 @@ resource "aws_lb_target_group" "tarraform_tg" {
     healthy_threshold   = var.tg_health_check["healthy_threshold"]
     matcher             = var.tg_health_check["matcher"]
   }
+  tags = {
+    Name = "tarraform-tg"
+  }
 
 }
-
 
 # Application load balancer
 
@@ -31,7 +33,7 @@ resource "aws_lb" "tarraform_alb" {
   ip_address_type    = "ipv4"
 
   tags = {
-    name = "terraform-alb"
+    Name = "terraform-alb"
   }
 }
 
@@ -54,14 +56,16 @@ resource "aws_lb_listener" "terraform_alb_listener" {
 resource "aws_launch_template" "terraform_lt" {
   name                   = "terraform-lt"
   vpc_security_group_ids = [aws_security_group.asg_sg.id]
-
-  image_id      = var.ami
-  instance_type = "t2.micro"
-  key_name      = "new_key"
-  user_data     = base64encode(file("userdata.sh"))
+  image_id               = var.ami
+  instance_type          = "t2.micro"
+  key_name               = "new_key"
+  user_data              = base64encode(file("userdata.sh"))
   tags = {
     Name = "terraform-lt"
   }
+
+  depends_on = [aws_nat_gateway.terraform_vpc_nat]
+
 }
 
 # Auto scaling group
@@ -71,11 +75,26 @@ resource "aws_autoscaling_group" "terraform_asg" {
   desired_capacity    = 2
   max_size            = 4
   min_size            = 1
-  vpc_zone_identifier = [for subnet in aws_subnet.public_subnets : subnet.id]
+  vpc_zone_identifier = [for subnet in aws_subnet.private_subnets : subnet.id]
   target_group_arns   = [aws_lb_target_group.tarraform_tg.arn]
 
   launch_template {
     id      = aws_launch_template.terraform_lt.id
     version = aws_launch_template.terraform_lt.latest_version
   }
+
 }
+
+# Bastion Host for SSHing into private instances
+
+resource "aws_instance" "Bastion" {
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+  subnet_id              = aws_subnet.public_subnets[0].id
+  ami                    = var.ami
+  instance_type          = "t2.micro"
+  key_name               = "new_key"
+  tags = {
+    Name = "terraform-bastion"
+  }
+}
+

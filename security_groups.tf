@@ -11,8 +11,8 @@ resource "aws_security_group" "alb_sg" {
   }
   egress {
     from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    to_port     = 65535
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
@@ -58,5 +58,31 @@ resource "aws_security_group" "asg_sg" {
   }
   tags = {
     Name = "tf_asg_sg"
+  }
+}
+
+# Security group for instances
+
+resource "aws_security_group" "bastion_sg" {
+  name   = "terraform_bastion_sg"
+  vpc_id = aws_vpc.terraform_vpc.id
+
+  #  Allow ssh
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  #   Allow all outbound
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "tf_bastion_sg"
   }
 }
